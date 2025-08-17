@@ -1,20 +1,31 @@
+
 using GeocitiesTimes.Server.Clients;
 using GeocitiesTimes.Server.Models;
-using GeocitiesTimes.Server.Providers;
+using GeocitiesTimes.Server.Providers.Pages;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
-
 namespace GeocitiesTimes.Server.Controllers;
 
 [ApiController]
-[Route("api/articles")]
-public class StoryController(IBatchProvider batchProvider): ControllerBase
+[Route("api/stories")]
+public class StoryController(IPagesProvider batchProvider, INewsClient newsClient): ControllerBase
 {
 
-    [HttpGet("topStories")]
-    public async Task<IActionResult> GetTopStories(int pageNum, int pageSize, string? searchTerm)
+    [HttpGet("new")]
+    public async Task<IActionResult> GetNewStories([FromQuery]NewsRequestDTO dto)
     {
-        var topStories = await batchProvider.GetTopStories(pageNum, pageSize, searchTerm);
-        return new OkObjectResult(topStories);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var newStoryIds = await newsClient.GetNewStoryIds();
+        var newStories = await batchProvider.GetStoryPages(newStoryIds, dto.PageNum, dto.PageSize, dto.SearchTerm);
+
+        if (newStories.Count == 0)
+        {
+            return NotFound();
+        }
+
+        return Ok(newStories);
     }
 }

@@ -1,6 +1,6 @@
 using GeocitiesTimes.Server.Clients;
-using GeocitiesTimes.Server.Models;
-using GeocitiesTimes.Server.Providers;
+using GeocitiesTimes.Server.Providers.Pages;
+using GeocitiesTimes.Server.Providers.Stories;
 using GeocitiesTimes.Server.Services;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -8,25 +8,21 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging.AddConsole();
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
 builder.Services.AddHttpClient();
+builder.Services.AddMemoryCache();
+builder.Services.Configure<MemoryCacheOptions>(options =>
+{
+    options.SizeLimit = 500; //Chosen as it is the maximum number of new stories.
+});
+
 
 builder.Services.AddScoped<INewsClient, NewsClient>();
 builder.Services.AddScoped<ICacheService, CacheService>();
-builder.Services.AddScoped<IStoryProvider, StoryProvider>();
-builder.Services.AddScoped<IBatchProvider, BatchProvider>();
-
-builder.Services.AddMemoryCache();
-
-builder.Services.Configure<MemoryCacheOptions>(options =>
-{
-    options.TrackStatistics = true;
-});
+builder.Services.AddScoped<IStoriesProvider, StoriesProvider>();
+builder.Services.AddScoped<IPagesProvider, PagesProvider>();
 
 var app = builder.Build();
 

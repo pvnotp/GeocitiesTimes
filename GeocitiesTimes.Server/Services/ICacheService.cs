@@ -4,7 +4,7 @@ namespace GeocitiesTimes.Server.Services
 {
     public interface ICacheService
     {
-        public bool TryGetArticleFromCache(int id, out Story article);
-        public void AddArticleToCache(Story article);
+        public bool TryGetStoryFromCache(int id, out Story article);
+        public void AddStoryToCache(Story article);
     }
 }

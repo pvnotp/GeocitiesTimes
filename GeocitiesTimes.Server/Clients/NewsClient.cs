@@ -1,6 +1,4 @@
 ﻿using GeocitiesTimes.Server.Models;
-using System.Net.Http;
-using static System.Net.WebRequestMethods;
 
 namespace GeocitiesTimes.Server.Clients
 {
@@ -13,12 +11,7 @@ namespace GeocitiesTimes.Server.Clients
             return await httpClient.GetFromJsonAsync<Story>($"{_baseURL}item/{id}.json");
         }
 
-        public async Task<int> GetMaxStoryId()
-        {
-            return await httpClient.GetFromJsonAsync<int>($"{_baseURL}maxitem.json");
-        }
-
-        public async Task<int[]?> GetTopStoryIds()
+        public async Task<int[]?> GetNewStoryIds()
         {
             return await httpClient.GetFromJsonAsync<int[]>($"{_baseURL}topstories.json");
         }
