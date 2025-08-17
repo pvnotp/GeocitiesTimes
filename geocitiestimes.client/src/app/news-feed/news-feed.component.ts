@@ -1,7 +1,7 @@
-import { Component, inject, output, OutputEmitterRef, signal } from '@angular/core';
-import { NewsFeedService, Story } from '../_services/news-feed-service';
+import { Component, computed, inject, signal } from '@angular/core';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { NewsFeedService, Story } from '../_services/news-feed-service';
 
 @Component({
   selector: 'app-news-feed',
@@ -10,79 +10,113 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
   styleUrl: './news-feed.component.css'
 })
 export class NewsFeedComponent {
+  private newsFeedService = inject(NewsFeedService);
 
-  newsFeedService = inject(NewsFeedService);
   loading = false;
   pageNum = signal(1);
   pageSize = signal(20);
-  pages: Story[][] | null = null;
-  page: Story[] | null = null;
-  pageArray: number[] = [];
-  finalPage: number | null = null;
-  searchControl = new FormControl<string>('', { nonNullable: true });
+  searchTerm = signal<string | null>(null);
+  searchControl = new FormControl<string>('', {
+    nonNullable: true,
+    validators: [Validators.minLength(2)]
+  });
+
+  pages = signal<Story[][]>([]);
+  page = computed<Story[]>(() => {
+    const idx = this.pageNum() - 1;
+    return this.pages()[idx] ?? [];
+  });
+
+  error = signal<string | null>(null)
+
+  // Pagination grouping
+  groupStart = computed(() => Math.floor((this.pageNum() - 1) / 3) * 3 + 1);
+
+  // Sliding window shows [1,2,3] => [4,5,6] => [7,8,9] etc
+  pageWindow = computed<number[]>(() => {
+    const start = this.groupStart();
+    const knownMax = this.pages().length || 1;
+    const end = Math.min(start + 2, knownMax);
+    const len = end >= start ? end - start + 1 : 0;
+    return Array.from({ length: len }, (_, i) => start + i);
+  });
+
+  // boolean to flag that we know we have the final page
+  finalKnown = computed<boolean>(() => {
+    const p = this.pages();
+    if (!p.length) {
+      return false;
+    }
+    const last = p[p.length - 1];
+    return last.length < this.pageSize() || this.pageWindow().length < 3;
+  });
+
+  canGetPrevGroup = computed(() => this.groupStart() > 1);
+  canGetNextGroup = computed(() => {
+    if (!this.finalKnown()) {
+      return true;
+    }
+    const nextStart = this.groupStart() + 3;
+    return nextStart <= this.pages().length;
+  });
+
+
+
 
   ngOnInit() {
     this.getNewStories();
   }
 
-  getNewStories(searchTerm: string | null = null) {
+  //Fetch new stories from API
+  private getNewStories() {
     this.loading = true;
-
-    this.newsFeedService.getNewsFeed(this.pageNum(), this.pageSize(), searchTerm)
+    this.newsFeedService
+      .getNewsFeed(this.pageNum(), this.pageSize(), this.searchTerm())
       .pipe(finalize(() => (this.loading = false)))
       .subscribe({
-        next: results => {
-          this.pages = results ?? []
-          this.page = this.pages[this.pageNum() - 1] ?? [];
-          this.updatePageArray();
+        next: (results) => {
+          this.pages.set(results ?? []);
+          const max = this.pages().length || 1;
+          if (this.pageNum() > max) this.pageNum.set(max);
         },
-        error: err => console.log(err)
+        error: (err) => this.error.set(err)
       });
   }
 
 
   triggerSearch(raw: string) {
+    // Mark as touched so errors show
+    this.searchControl.markAsTouched();
+
+    if (this.searchControl.invalid) {
+      return; // don’t fire search if invalid
+    }
+
     this.pageNum.set(1);
     const term = raw?.trim() || null;
-    this.getNewStories(term);
+    this.searchTerm.set(term);
+    this.getNewStories();
   }
 
-
-
-  setPage(pageNumber: number) {
-    if (!this.pages) return;
-    this.page = this.pages[pageNumber - 1] ?? null;
-    this.pageNum.set(pageNumber);
-  }
-
-  get nextPage() {
-    return this.pageArray[this.pageArray.length - 1] + 1;
-  }
-  get prevPage() {
-    return this.pageArray[0] - 1;
-  }
-
-  updatePageArray() {
-    if (!this.pages || this.pages.length === 0) {
-      this.pageArray = [];
+  setPage(n: number) {
+    if (n < 1) {
       return;
     }
-    const groupSize = 3;
-    const groupIndex = Math.floor((this.pageNum() - 1) / groupSize);
-    const start = groupIndex * groupSize + 1;
-    let end = 0;
-    if (start + groupSize - 1 === this.pages.length &&
-      this.pages[this.pages.length - 1].length < this.pageSize()) {
-      end = start + groupSize - 1;
-      this.finalPage = end;
-    } else if (start + groupSize - 1 > this.pages.length) {
-      end = this.pages.length;
-      this.finalPage = end;
-    } else {
-      end = start + groupSize - 1;
+    this.pageNum.set(n);
+  }
 
+  prevGroup() {
+    if (!this.canGetPrevGroup()) {
+      return;
     }
+    this.setPage(this.groupStart() - 3);
+  }
 
-    this.pageArray = Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  nextGroup() {
+    if (!this.canGetNextGroup()) {
+      return;
+    }
+    this.setPage(this.groupStart() + 3);
+    this.getNewStories();
   }
 }

@@ -1,23 +1,38 @@
-
+<!-- Search -->
 <input type="text"
        placeholder="Search…"
-       #q
-       (keyup.enter)="triggerSearch(q.value)" />
-<button (click)="triggerSearch(q.value)">Search</button>
+       [formControl]="searchControl"
+       (keyup.enter)="triggerSearch(searchControl.value)" />
+<button (click)="triggerSearch(searchControl.value)">Search</button>
 
-@for (story of page; track story.id) {
-<div>
-  <a href="{{story.url}}">{{ story.title }}</a>
+<!-- Error message -->
+@if (searchControl.touched && searchControl.hasError('minlength')) {
+<div class="error">
+  Search term must be at least 2 characters
 </div>
 }
 
-<button (click)="setPage(prevPage); getNewStories()"
-        [disabled]="prevPage < 1">
-  <<
-</button>
 
-@for (pageNum of pageArray; track pageNum){
-<button (click)="setPage(pageNum)">{{ pageNum }}</button>
+
+<!-- Results -->
+@if (error()){
+<div>{{ error }}</div>
+}
+@else{
+@for (story of page(); track story.id) {
+<div>
+  <a [href]="story.url">{{ story.title }}</a>
+</div>
 }
 
-<button (click)="setPage(nextPage); getNewStories()" [disabled]="finalPage && nextPage && nextPage >= finalPage">>></button>
+}
+
+<!-- Pager -->
+<button (click)="prevGroup()" [disabled]="!canGetPrevGroup()">«</button>
+
+@for (n of pageWindow(); track n) {
+<button (click)="setPage(n)" [disabled]="n === pageNum()">{{ n }}</button>
+}
+
+<button (click)="nextGroup()" [disabled]="!canGetNextGroup()">»</button>
+
