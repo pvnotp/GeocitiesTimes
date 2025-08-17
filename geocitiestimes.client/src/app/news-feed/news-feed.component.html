@@ -19,6 +19,10 @@
   }
 </div>
 
+@if(loading()){
+<img class="loading" src="assets/XVo6.gif" />
+}
+@else{
 <div class="results">
   @if (error()){
   <div>{{ error() }}</div>
@@ -28,6 +32,7 @@
   }
   }
 </div>
+}
 
 <div class="pagination">
   <button (click)="prevGroup()" [disabled]="!canGetPrevGroup()">«</button>

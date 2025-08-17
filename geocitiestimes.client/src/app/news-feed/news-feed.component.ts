@@ -12,7 +12,7 @@ import { NewsFeedService, Story } from '../_services/news-feed-service';
 export class NewsFeedComponent {
   private newsFeedService = inject(NewsFeedService);
 
-  loading = false;
+  loading = signal(false);
   pageNum = signal(1);
   searchTerm = signal<string | null>(null);
   searchControl = new FormControl<string>('', {
@@ -74,10 +74,10 @@ export class NewsFeedComponent {
 
   //Fetch new stories from API
   private getNewStories() {
-    this.loading = true;
+    this.loading.set(true);
     this.newsFeedService
       .getNewsFeed(this.pageNum(), this.pageSize(), this.searchTerm())
-      .pipe(finalize(() => (this.loading = false)))
+      .pipe(finalize(() => (this.loading.set(false))))
       .subscribe({
         next: (results) => {
           this.pages.set(results ?? []);
