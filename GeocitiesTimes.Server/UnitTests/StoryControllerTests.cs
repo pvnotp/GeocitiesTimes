@@ -63,7 +63,7 @@ namespace GeocitiesTimes.Server.Tests.Controllers
         }
 
         [Test]
-        public async Task GetNewStories_NoStoriesFound_ReturnsNotFound()
+        public async Task GetNewStories_NoStoriesFound_ReturnsEmptyList()
         {
             var dto = new NewsRequestDTO
             {
@@ -82,7 +82,10 @@ namespace GeocitiesTimes.Server.Tests.Controllers
 
             var result = await _controller.GetNewStories(dto);
 
-            Assert.That(result, Is.InstanceOf<NotFoundResult>());
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = (OkObjectResult)result;
+            Assert.That(okResult.Value, Is.InstanceOf<IEnumerable<IEnumerable<Story>>>());
+            Assert.That(okResult.Value, Is.Empty);
 
             _mockNewsClient.Verify(x => x.GetNewStoryIds(), Times.Once);
             _mockPagesProvider.Verify(x => x.GetStoryPages(storyIds, dto.PageNum, dto.PageSize, dto.SearchTerm), Times.Once);
@@ -133,7 +136,7 @@ namespace GeocitiesTimes.Server.Tests.Controllers
             var result = await _controller.GetNewStories(_defaultDTO);
 
             _mockNewsClient.Verify(x => x.GetNewStoryIds(), Times.Once);
-            Assert.That(result, Is.InstanceOf<NotFoundResult>());
+            Assert.That(result, Is.InstanceOf<NotFoundObjectResult>());
         }
 
         [Test]
@@ -151,23 +154,6 @@ namespace GeocitiesTimes.Server.Tests.Controllers
             // Verify that dependencies are not called when model state is invalid
             _mockNewsClient.Verify(x => x.GetNewStoryIds(), Times.Never);
             _mockPagesProvider.Verify(x => x.GetStoryPages(It.IsAny<int[]>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<string>()), Times.Never);
-        }
-
-        [Test]
-        public async Task GetNewStories_EmptyStoryIds_ReturnsNotFound()
-        {
-            var emptyStoryIds = new int[0];
-            var emptyStories = new List<IEnumerable<Story>>();
-
-            _mockNewsClient.Setup(x => x.GetNewStoryIds())
-                          .ReturnsAsync(emptyStoryIds);
-
-            _mockPagesProvider.Setup(x => x.GetStoryPages(emptyStoryIds, _defaultDTO.PageNum, _defaultDTO.PageSize, _defaultDTO.SearchTerm))
-                             .Returns(Task.FromResult<IEnumerable<IEnumerable<Story>>>(emptyStories));
-
-            var result = await _controller.GetNewStories(_defaultDTO);
-
-            Assert.That(result, Is.InstanceOf<NotFoundResult>());
         }
     }
 }
