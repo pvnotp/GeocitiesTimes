@@ -14,7 +14,6 @@ export class NewsFeedComponent {
 
   loading = false;
   pageNum = signal(1);
-  pageSize = signal(20);
   searchTerm = signal<string | null>(null);
   searchControl = new FormControl<string>('', {
     nonNullable: true,
@@ -25,6 +24,12 @@ export class NewsFeedComponent {
   page = computed<Story[]>(() => {
     const idx = this.pageNum() - 1;
     return this.pages()[idx] ?? [];
+  });
+
+  pageSize = signal(15);
+  pageSizeControl = new FormControl<number>(15, {
+    nonNullable: true,
+    validators: [Validators.min(1), Validators.max(50)]
   });
 
   error = signal<string | null>(null)
@@ -117,6 +122,12 @@ export class NewsFeedComponent {
       return;
     }
     this.setPage(this.groupStart() + 3);
+    this.getNewStories();
+  }
+
+  updatePageSize(pageSize: number) {
+    this.setPage(1);
+    this.pageSize.set(pageSize);
     this.getNewStories();
   }
 }

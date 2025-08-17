@@ -1,38 +1,43 @@
-<!-- Search -->
-<input type="text"
-       placeholder="Search…"
-       [formControl]="searchControl"
-       (keyup.enter)="triggerSearch(searchControl.value)" />
-<button (click)="triggerSearch(searchControl.value)">Search</button>
-
-<!-- Error message -->
-@if (searchControl.touched && searchControl.hasError('minlength')) {
-<div class="error">
-  Search term must be at least 2 characters
-</div>
-}
-
-
-
-<!-- Results -->
-@if (error()){
-<div>{{ error }}</div>
-}
-@else{
-@for (story of page(); track story.id) {
 <div>
-  <a [href]="story.url">{{ story.title }}</a>
+
+  <div class="breaking-news">
+    <img src="assets/ULMC.gif" />
+    <span class="blink">BREAKING NEWS</span>
+    <img src="assets/ULMC.gif" />
+  </div>
+
+  <!-- Search -->
+  <input type="text"
+         placeholder="Search…"
+         [formControl]="searchControl"
+         (keyup.enter)="triggerSearch(searchControl.value)" />
+  <button (click)="triggerSearch(searchControl.value)">Search</button>
+
+  <!-- Error message -->
+  @if (searchControl.touched && searchControl.hasError('minlength')) {
+  <div class="error">Search term must be at least 2 characters</div>
+  }
 </div>
-}
 
-}
+<div class="results">
+  @if (error()){
+  <div>{{ error() }}</div>
+  } @else {
+  @for (story of page(); track story.id) {
+  <div><a [href]="story.url">{{ story.title }}</a></div>
+  }
+  }
+</div>
 
-<!-- Pager -->
-<button (click)="prevGroup()" [disabled]="!canGetPrevGroup()">«</button>
+<div class="pagination">
+  <button (click)="prevGroup()" [disabled]="!canGetPrevGroup()">«</button>
+  @for (n of pageWindow(); track n) {
+  <button (click)="setPage(n)" [disabled]="n === pageNum()">{{ n }}</button>
+  }
+  <button (click)="nextGroup()" [disabled]="!canGetNextGroup()">»</button>
+</div>
 
-@for (n of pageWindow(); track n) {
-<button (click)="setPage(n)" [disabled]="n === pageNum()">{{ n }}</button>
-}
-
-<button (click)="nextGroup()" [disabled]="!canGetNextGroup()">»</button>
-
+<div>
+  Page Size: <input class="small" [formControl]="pageSizeControl">
+  <button (click)="updatePageSize(pageSizeControl.value)">Update</button>
+</div>
