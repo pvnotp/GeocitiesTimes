@@ -19,12 +19,18 @@ public class StoryController(IPagesProvider batchProvider, INewsClient newsClien
         }
 
         var newStoryIds = await newsClient.GetNewStoryIds();
-        var newStories = await batchProvider.GetStoryPages(newStoryIds, dto.PageNum, dto.PageSize, dto.SearchTerm);
+        if (newStoryIds == null || newStoryIds.Count() == 0)
+        {
+            return NotFound();
+        }
 
+        var newStories = await batchProvider.GetStoryPages(newStoryIds, dto.PageNum, dto.PageSize, dto.SearchTerm);
         if (newStories.Count() == 0)
         {
             return NotFound();
         }
+
+
 
         return Ok(newStories);
     }

@@ -6,13 +6,8 @@ namespace GeocitiesTimes.Server.Providers.Pages
 {
     public class PagesProvider(IStoriesProvider storyProvider): IPagesProvider
     {
-        public async Task<IEnumerable<IEnumerable<Story>>> GetStoryPages(int[]? storyIds, int pageNum, int pageSize, string? searchTerm = null)
+        public async Task<IEnumerable<IEnumerable<Story>>> GetStoryPages(int[] storyIds, int pageNum, int pageSize, string? searchTerm = null)
         {
-
-            if (storyIds == null || storyIds.Length == 0)
-            {
-                return new List<Story[]>();
-            }
 
             /* At maximum, we will fetch only the stories leading up to the requested page
              * (plus two extra, so that the UI doesn't have to make a call every time the user
@@ -26,7 +21,7 @@ namespace GeocitiesTimes.Server.Providers.Pages
             /* We fetch stories in batches rather than retrieving the full set of results at once.
              * This allows us to exit early when we have enough results to display.
              */
-            var batchSize = Math.Min(Constants.MaxBatchSize, pageNum * pageSize);
+            var batchSize = Math.Min(Constants.MaxBatchSize, maxStoriesToFetch);
             foreach (var idBatch in storyIds.Chunk(batchSize))
             { 
                 var storyBatch = await storyProvider.GetStoryListFromCacheOrClient(idBatch);
