@@ -15,7 +15,7 @@ namespace GeocitiesTimes.Server.Providers.Pages
              * having to fetch the full set of results in a single call, leading to a quicker 
              * response time.
              */
-            var maxStoriesToFetch = Math.Max(pageSize, (pageNum + 2) * pageSize);
+            var maxStoriesToFetch = (pageNum + 2) * pageSize;
             var matches = new List<Story>(capacity: maxStoriesToFetch);
             
             /* We fetch stories in batches rather than retrieving the full set of results at once.
@@ -39,7 +39,7 @@ namespace GeocitiesTimes.Server.Providers.Pages
                     //Exit early if we have enough.
                     if (matches.Count >= maxStoriesToFetch)
                     {
-                        return matches.Chunk(pageSize).ToList();
+                        return matches.Take(maxStoriesToFetch).Chunk(pageSize).ToList();
                     }
                     continue;
                 }
@@ -56,7 +56,7 @@ namespace GeocitiesTimes.Server.Providers.Pages
                         //Exit early if we have enough.
                         if (matches.Count >= maxStoriesToFetch)
                         {
-                            return matches.Chunk(pageSize).ToList();
+                            return matches.Take(maxStoriesToFetch).Chunk(pageSize).ToList();
                         }
                     }
                 }

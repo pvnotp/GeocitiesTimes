@@ -2,6 +2,7 @@ using GeocitiesTimes.Server.Clients;
 using GeocitiesTimes.Server.Providers.Pages;
 using GeocitiesTimes.Server.Providers.Stories;
 using GeocitiesTimes.Server.Services;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.Extensions.Caching.Memory;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,10 +25,26 @@ builder.Services.AddScoped<ICacheService, CacheService>();
 builder.Services.AddScoped<IStoriesProvider, StoriesProvider>();
 builder.Services.AddScoped<IPagesProvider, PagesProvider>();
 
+var allowedOrigins = builder.Configuration
+    .GetSection("Cors:AllowedOrigins")
+    .Get<string[]>() ?? Array.Empty<string>();
+builder.Services.AddCors(options => 
+{
+    options.AddPolicy("CORSPolicy", policy =>
+    {
+        policy.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
-app.UseDefaultFiles();
+
+app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseRouting();
+app.UseCors("CORSPolicy");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -36,9 +53,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 

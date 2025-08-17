@@ -1,0 +1,23 @@
+
+<input type="text"
+       placeholder="Search…"
+       #q
+       (keyup.enter)="triggerSearch(q.value)" />
+<button (click)="triggerSearch(q.value)">Search</button>
+
+@for (story of page; track story.id) {
+<div>
+  <a href="{{story.url}}">{{ story.title }}</a>
+</div>
+}
+
+<button (click)="setPage(prevPage); getNewStories()"
+        [disabled]="prevPage < 1">
+  <<
+</button>
+
+@for (pageNum of pageArray; track pageNum){
+<button (click)="setPage(pageNum)">{{ pageNum }}</button>
+}
+
+<button (click)="setPage(nextPage); getNewStories()" [disabled]="finalPage && nextPage && nextPage >= finalPage">>></button>

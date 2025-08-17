@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GeocitiesTimes.Server.Controllers;
 
 [ApiController]
-[Route("api/stories")]
+[Route("stories")]
 public class StoryController(IPagesProvider batchProvider, INewsClient newsClient): ControllerBase
 {
 
