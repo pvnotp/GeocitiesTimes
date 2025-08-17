@@ -5,6 +5,6 @@ namespace GeocitiesTimes.Server.Providers.Stories
     public interface IStoriesProvider
     {
         Task<Story?> GetStoryFromCacheOrClient(int id);
-        Task<List<Story>> GetStoryListFromCacheOrClient(int[] storyIds);
+        Task<IEnumerable<Story>> GetStoryListFromCacheOrClient(int[] storyIds);
     }
 }

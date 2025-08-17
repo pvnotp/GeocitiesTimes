@@ -24,7 +24,7 @@ namespace GeocitiesTimes.Server.Providers.Stories
             return null; //Null results will be filtered out
         }
 
-        public async Task<List<Story>> GetStoryListFromCacheOrClient(int[] storyIds)
+        public async Task<IEnumerable<Story>> GetStoryListFromCacheOrClient(int[] storyIds)
         {
 
             if (storyIds == null || storyIds.Length == 0)

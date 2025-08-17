@@ -21,7 +21,7 @@ public class StoryController(IPagesProvider batchProvider, INewsClient newsClien
         var newStoryIds = await newsClient.GetNewStoryIds();
         var newStories = await batchProvider.GetStoryPages(newStoryIds, dto.PageNum, dto.PageSize, dto.SearchTerm);
 
-        if (newStories.Count == 0)
+        if (newStories.Count() == 0)
         {
             return NotFound();
         }

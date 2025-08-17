@@ -6,7 +6,7 @@ namespace GeocitiesTimes.Server.Providers.Pages
 {
     public class PagesProvider(IStoriesProvider storyProvider): IPagesProvider
     {
-        public async Task<List<Story[]>> GetStoryPages(int[]? storyIds, int pageNum, int pageSize, string? searchTerm = null)
+        public async Task<IEnumerable<IEnumerable<Story>>> GetStoryPages(int[]? storyIds, int pageNum, int pageSize, string? searchTerm = null)
         {
 
             if (storyIds == null || storyIds.Length == 0)
@@ -31,7 +31,7 @@ namespace GeocitiesTimes.Server.Providers.Pages
             { 
                 var storyBatch = await storyProvider.GetStoryListFromCacheOrClient(idBatch);
 
-                if (storyBatch is null || storyBatch.Count == 0)
+                if (storyBatch is null || storyBatch.Count() == 0)
                 {
                     continue;
                 }
