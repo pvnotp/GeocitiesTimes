@@ -6,12 +6,12 @@ namespace GeocitiesTimes.Server.Services
 {
     public class CacheService(IMemoryCache cache) : ICacheService
     {
-        public bool TryGetArticleFromCache(int id, out Article? article)
+        public bool TryGetArticleFromCache(int id, out Story? story)
         {
-            return cache.TryGetValue(id, out article);
+            return cache.TryGetValue(id, out story);
         }
 
-        public void AddArticleToCache(Article article)
+        public void AddArticleToCache(Story story)
         {
             var options = new MemoryCacheEntryOptions
             {
@@ -20,7 +20,7 @@ namespace GeocitiesTimes.Server.Services
                 Priority = CacheItemPriority.Normal
             };
 
-            cache.Set(article.Id, article, options);
+            cache.Set(story.Id, story, options);
 
         }
     }

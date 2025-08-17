@@ -17,8 +17,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<INewsClient, NewsClient>();
-builder.Services.AddScoped<IArticleProvider, ArticleProvider>();
 builder.Services.AddScoped<ICacheService, CacheService>();
+builder.Services.AddScoped<IStoryProvider, StoryProvider>();
+builder.Services.AddScoped<IBatchProvider, BatchProvider>();
+
 builder.Services.AddMemoryCache();
 
 builder.Services.Configure<MemoryCacheOptions>(options =>

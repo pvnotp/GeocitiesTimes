@@ -1,6 +1,6 @@
 ﻿namespace GeocitiesTimes.Server.Models
 {
-    public class Article
+    public class Story
     {
         public required int Id { get; set; }
         public string? Title { get; set; }

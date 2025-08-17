@@ -4,7 +4,9 @@ namespace GeocitiesTimes.Server.Clients
 {
     public interface INewsClient
     {
-        public Task<Article?> GetArticle(int id);
-        //public Task<int[]?> GetTopStories();
+        public Task<Story?> GetStory(int id);
+        public Task<int> GetMaxStoryId();
+        public Task<int[]?> GetTopStoryIds();
+
     }
 }
