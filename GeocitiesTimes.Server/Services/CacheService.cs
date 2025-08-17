@@ -7,7 +7,14 @@ namespace GeocitiesTimes.Server.Services
     {
         public bool TryGetStoryFromCache(int id, out Story story)
         {
-            return cache.TryGetValue(id, out story);
+            var status = cache.TryGetValue(id, out story);
+
+            if (story == null)
+            {
+                return false;
+            }
+
+            return status;
         }
 
 
