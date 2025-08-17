@@ -64,7 +64,8 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ],
-              "outputHashing": "none"
+              "outputHashing": "none",
+              "extractLicenses":  true
             },
             "development": {
               "optimization": false,
@@ -72,7 +73,7 @@
               "sourceMap": true
             }
           },
-          "defaultConfiguration": "development",
+          "defaultConfiguration": "development"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",

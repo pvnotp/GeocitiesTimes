@@ -6,14 +6,14 @@
     <img src="assets/ULMC.gif" />
   </div>
 
-  <!-- Search -->
+
   <input type="text"
          placeholder="Search…"
          [formControl]="searchControl"
          (keyup.enter)="triggerSearch(searchControl.value)" />
   <button (click)="triggerSearch(searchControl.value)">Search</button>
 
-  <!-- Error message -->
+
   @if (searchControl.touched && searchControl.hasError('minlength')) {
   <div class="error">Search term must be at least 2 characters</div>
   }
