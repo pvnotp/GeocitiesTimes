@@ -13,7 +13,7 @@ namespace GeocitiesTimes.Server.Clients
 
         public async Task<int[]?> GetNewStoryIds()
         {
-            return await httpClient.GetFromJsonAsync<int[]>($"{_baseURL}topstories.json");
+            return await httpClient.GetFromJsonAsync<int[]>($"{_baseURL}newstories.json");
         }
     }
 }
