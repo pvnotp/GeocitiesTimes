@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, model, output, signal } from '@angular/core';
+import { Component, computed, input, model, output } from '@angular/core';
 import { Story } from '../_services/news-feed-service';
 
 @Component({

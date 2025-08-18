@@ -32,7 +32,6 @@ export class NewsFeedComponent {
     this.getNewStories();
   }
 
-  //Fetch new stories from API
   getNewStories() {
     this.loading.set(true);
     this.newsFeedService

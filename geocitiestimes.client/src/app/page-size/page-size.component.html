@@ -3,3 +3,12 @@
   Page Size: <input class="small" [formControl]="pageSizeControl">
   <button (click)="updatePageSize(pageSizeControl.value)">Update</button>
 </div>
+
+@if (pageSizeControl.touched && pageSizeControl.hasError('min')) {
+<div class="error">Page size must be at least 1</div>
+}
+
+
+@if (pageSizeControl.touched && pageSizeControl.hasError('max')) {
+<div class="error">Page size can't be more than 50</div>
+}

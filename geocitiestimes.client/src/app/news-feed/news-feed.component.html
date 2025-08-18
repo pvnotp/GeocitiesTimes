@@ -1,26 +1,27 @@
+
+
+<div class="breaking-news">
+  <img src="assets/ULMC.gif" />
+  <span class="blink">BREAKING NEWS</span>
+  <img src="assets/ULMC.gif" />
+</div>
+
 <div>
-
-  <div class="breaking-news">
-    <img src="assets/ULMC.gif" />
-    <span class="blink">BREAKING NEWS</span>
-    <img src="assets/ULMC.gif" />
-  </div>
-
-
-<app-search (searchTermUpdate)="searchTerm.set($event); pageNum.set(1); getNewStories()"></app-search>
+  <app-search (searchTermUpdate)="searchTerm.set($event); pageNum.set(1); getNewStories()"></app-search>
+</div>
 
 @if(loading()){
 <img class="loading" src="assets/XVo6.gif" />
 }
 @else{
 <div class="results">
-  @if (error()){
-  <div>{{ error() }}</div>
-  } @else {
-  @for (story of page(); track story.id) {
-  <div><a [href]="story.url || noUrlRoute">{{ story.title }}</a></div>
-  }
-  }
+@if (error()){
+<div>{{ error() }}</div>
+} @else {
+@for (story of page(); track story.id) {
+<div><a [href]="story.url || noUrlRoute">{{ story.title }}</a></div>
+}
+}
 </div>
 }
 
