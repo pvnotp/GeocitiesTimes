@@ -11,7 +11,7 @@ function makeStories(count: number, startId = 1): Story[] {
   }));
 }
 
-describe('NewsFeedComponent (Jasmine)', () => {
+describe('NewsFeedComponent', () => {
   let component: NewsFeedComponent;
   let serviceSpy: jasmine.SpyObj<NewsFeedService>;
 
