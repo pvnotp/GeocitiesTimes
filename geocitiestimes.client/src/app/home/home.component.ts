@@ -1,5 +1,4 @@
 import { Component, input } from '@angular/core';
-import { Story } from '../_services/news-feed-service';
 import { NewsFeedComponent } from '../news-feed/news-feed.component';
 
 @Component({

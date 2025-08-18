@@ -1,5 +1,4 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { NewsFeedService, Story } from '../_services/news-feed-service';
 import { PaginationComponent } from '../pagination/pagination.component';
@@ -8,7 +7,7 @@ import { SearchComponent } from '../search/search.component';
 
 @Component({
   selector: 'app-news-feed',
-  imports: [ReactiveFormsModule, PaginationComponent, PageSizeComponent, SearchComponent],
+  imports: [PaginationComponent, PageSizeComponent, SearchComponent],
   templateUrl: './news-feed.component.html',
   styleUrl: './news-feed.component.css'
 })

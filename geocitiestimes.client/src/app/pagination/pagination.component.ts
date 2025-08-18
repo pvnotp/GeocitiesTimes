@@ -10,7 +10,6 @@ import { Story } from '../_services/news-feed-service';
 
 export class PaginationComponent {
   pageNum = model<number>(1);
-  //pageNumUpdate = output<number>();
   pages = input<Story[][]>([]);
   pageSize = input<number>(15);
 
@@ -81,6 +80,5 @@ export class PaginationComponent {
       return;
     }
     this.pageNum.set(n);
-    //this.pageNumUpdate.emit(this.pageNum());
   }
 }

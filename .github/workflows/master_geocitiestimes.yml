@@ -28,7 +28,7 @@ jobs:
         run: npm run build -- --configuration production
        
       - name: Run Angular tests
-        working-directory: .
+        working-directory: geocitiestimes.client
         run: npm run test:ci
 
       # 2) .NET

@@ -1,7 +1,7 @@
 <div class="pagination">
   <button (click)="prevGroup()" [disabled]="!canGetPrevGroup()">«</button>
   @for (n of pageWindow(); track n) {
-  <button (click)="setPage(n)" [disabled]="n === pageNum()">{{ n }}</button>
+  <button (click)="setPage(n)" [class.selected]="n === pageNum()">{{ n }}</button>
   }
   <button (click)="nextGroup()" [disabled]="!canGetNextGroup()">»</button>
 </div>
