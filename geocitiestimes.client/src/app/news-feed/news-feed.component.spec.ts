@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { NewsFeedComponent } from './news-feed.component';
 import { NewsFeedService, Story } from '../_services/news-feed-service';
 
@@ -21,14 +21,13 @@ describe('NewsFeedComponent', () => {
     await TestBed.configureTestingModule({
       imports: [NewsFeedComponent],
       providers: [{ provide: NewsFeedService, useValue: serviceSpy }],
-    }).overrideComponent(NewsFeedComponent, { set: { template: '' } })
-      .compileComponents();
+    }).compileComponents();
 
     const fixture = TestBed.createComponent(NewsFeedComponent);
     component = fixture.componentInstance;
   });
 
-  it('calls service on init and populates pages/page', () => {
+  it('Calls service on init and populates newsfeed', () => {
     const page1 = makeStories(15, 1);
     const page2 = makeStories(15, 100);
     const page3 = makeStories(15, 200);

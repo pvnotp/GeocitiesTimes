@@ -18,7 +18,7 @@
   <div>{{ error() }}</div>
   } @else {
   @for (story of page(); track story.id) {
-  <div><a [href]="story.url">{{ story.title }}</a></div>
+  <div><a [href]="story.url || noUrlRoute">{{ story.title }}</a></div>
   }
   }
 </div>

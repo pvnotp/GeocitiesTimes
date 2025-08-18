@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SearchComponent } from './search.component';
 
 describe('SearchComponent', () => {
-  let component: SearchComponent;
+  let comp: SearchComponent;
   let fixture: ComponentFixture<SearchComponent>;
 
   beforeEach(async () => {
@@ -13,11 +13,19 @@ describe('SearchComponent', () => {
     .compileComponents();
 
     fixture = TestBed.createComponent(SearchComponent);
-    component = fixture.componentInstance;
+    comp = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(comp).toBeTruthy();
+  });
+
+  it('should validate search term length', () => {
+    comp.searchControl.setValue("a");
+    expect(comp.searchControl.valid).toBeFalse();
+
+    comp.searchControl.setValue("test");
+    expect(comp.searchControl.valid).toBeTrue();
   });
 });

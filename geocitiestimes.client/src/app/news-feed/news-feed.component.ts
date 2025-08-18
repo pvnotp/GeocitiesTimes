@@ -26,6 +26,7 @@ export class NewsFeedComponent {
   });
 
   error = signal<string | null>(null)
+  noUrlRoute = "/no-url";
 
   ngOnInit() {
     this.getNewStories();
