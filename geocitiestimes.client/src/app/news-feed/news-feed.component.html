@@ -7,17 +7,7 @@
   </div>
 
 
-  <input type="text"
-         placeholder="Search…"
-         [formControl]="searchControl"
-         (keyup.enter)="triggerSearch(searchControl.value)" />
-  <button (click)="triggerSearch(searchControl.value)">Search</button>
-
-
-  @if (searchControl.touched && searchControl.hasError('minlength')) {
-  <div class="error">Search term must be at least 2 characters</div>
-  }
-</div>
+<app-search (searchTermUpdate)="searchTerm.set($event); pageNum.set(1); getNewStories()"></app-search>
 
 @if(loading()){
 <img class="loading" src="assets/XVo6.gif" />
@@ -34,15 +24,13 @@
 </div>
 }
 
-<div class="pagination">
-  <button (click)="prevGroup()" [disabled]="!canGetPrevGroup()">«</button>
-  @for (n of pageWindow(); track n) {
-  <button (click)="setPage(n)" [disabled]="n === pageNum()">{{ n }}</button>
-  }
-  <button (click)="nextGroup()" [disabled]="!canGetNextGroup()">»</button>
-</div>
+<app-pagination (pageNumChange)="pageNum.set($event)"
+                (loadMorePages)="getNewStories()"
+                [pages]="pages()"
+                [pageSize]="pageSize()"
+                [pageNum]="pageNum()">
+</app-pagination>
 
-<div>
-  Page Size: <input class="small" [formControl]="pageSizeControl">
-  <button (click)="updatePageSize(pageSizeControl.value)">Update</button>
+<div class="page-size">
+  <app-page-size (pageSizeUpdate)="pageSize.set($event); pageNum.set(1); getNewStories()"></app-page-size>
 </div>

@@ -20,18 +20,21 @@ jobs:
           node-version: '20'
 
       - name: Install client deps
-        working-directory: geocitiestimes.client     # <-- adjust if your client dir is different
+        working-directory: geocitiestimes.client
         run: npm ci
 
       - name: Build Angular (prod to wwwroot)
         working-directory: geocitiestimes.client
         run: npm run build -- --configuration production
-        # Make sure this configuration's outputPath points to ../GeocitiesTimes.Server/wwwroot
+       
+      - name: Run Angular tests
+        working-directory: .
+        run: npm run test:ci
 
       # 2) .NET
       - uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.x'                      # Use 9.x if you target net9.0
+          dotnet-version: '8.x' 
 
       - name: Restore
         run: dotnet restore
